@@ -24,8 +24,8 @@
 # can be easily created later.
 
 
-#library(tidyverse)
-#library(leaflet)
+library(tidyverse)
+library(leaflet)
 
 
 # Part 0) Function definitions--------------------------------------------------
@@ -33,11 +33,41 @@
 
 # Part 1) Loading and preprocessing the data------------------------------------
 
+# Check if the file exists in the directory before downloading it again
+file.name <- "Recycling_Center_Locations.csv"
+if (!file.exists(file.name)) {
+  url <- "https://opendata.arcgis.com/datasets/2934190c5b8c4f508d80f22905d8cacc_2.csv"
+  download.file(url, file.name)
+  rm(url)
+}
+
+# Load in the raw data
+recycling.data <- read.csv(file.name, stringsAsFactors = FALSE)  # 39 obs 9 vars
+rm(file.name)
 
 
+# Part 2) Explore and process data----------------------------------------------
+
+# Preview the data
+# str(recycling.data)  # The first two columns are longitude and latitude
+col1.name <- names(recycling.data)[1]  # First column name is unusual, extract
+# summary(recycling.data)  # Columns 3 and 5 are indicies, column 9 is an ID
+
+# Remove unneeded columns and convert data types
+recycling.data <- recycling.data %>%
+  select(longitude = col1.name, latitude = Y, Location.Name = LOCATION,
+         Location.Add = ADDRESS, Location.Status = Status,
+         Location.Hours = Hours_1) %>%  # Drop and rename variables
+  mutate(Location.Status = as.factor(Location.Status))  # 39 obs. of 6 variables
+rm(col1.name)
 
 
+# Part 3) Generate the map------------------------------------------------------
 
+# recycling.data %>%
+#   leaflet() %>%
+#   addTiles() %>%
+#   addMarkers()
 
 
 
