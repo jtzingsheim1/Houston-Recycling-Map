@@ -27,7 +27,7 @@ essentially a reproduction of a feature that already exists on their website.
 This report page is hosted by GitHub Pages, and the repo for this project is
 located [here][2]
 
-[2]: xxxxx  "GitHub repo"
+[2]: https://github.com/jtzingsheim1/Houston-Recycling-Map  "GitHub repo"
 
 ## Acknowledgement
 
@@ -67,6 +67,7 @@ rec.data <- rec.data %>%
          Location.Add = ADDRESS, Location.Status = Status,
          Location.Hours = Hours_1) %>%  # Drop and rename variables
   mutate(Location.Status = as.factor(Location.Status))  # 39 obs. of 6 variables
+as_tibble(rec.data)  # Preview the data
 rm(file.name, col1.name)
 
 ```
@@ -78,7 +79,7 @@ In the next code chunk the data are placed into the map.
 
 ```{r mapping}
 
-rec.map <- rec.data %>%
+rec.data %>%
   leaflet() %>%
   addTiles() %>%
   addMarkers(lng = rec.data$Longitude, lat = rec.data$Latitude,
@@ -86,7 +87,6 @@ rec.map <- rec.data %>%
                            "Address: ", rec.data$Location.Add, "<br>",
                            "Status: ", rec.data$Location.Status, "<br>",
                            "Hours: ", rec.data$Location.Hours, sep = ""))
-rec.map
 
 ```
 
