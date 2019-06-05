@@ -1,5 +1,5 @@
 # Coursera Data Science Specialization Course 9 Project 1 Script----------------
-# Create a Webpage that Features a Map Created with Leaflet
+# Map of Houston Area Recycling Centers
 
 
 # Acknowledgement for this dataset goes to the City of Houston who make this
