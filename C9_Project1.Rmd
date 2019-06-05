@@ -13,3 +13,35 @@ knitr::opts_chunk$set(echo = TRUE)
 ```
 
 
+## Overview
+
+This report is for the week 2 peer-graded project in the Developing Data
+Products course from Johns Hopkins University within the Data Science
+Specialization on Coursera. The instructions say to create a web page using R
+Markdown that features a map created with Leaflet. 
+
+To meet the objective a map was created which shows recycling locations in the
+area of Houston, TX. The input for this document is a static file of the COHGIS
+Recycling Center Locations dataset which came from the URL below.
+
+
+## Acknowledgement
+
+Acknowledgement for this dataset goes to the City of Houston who make this data
+available through their GIS open data portal which is located [here][1]
+
+[1]: https://cohgis-mycity.opendata.arcgis.com/  "COHGIS Website"
+
+
+## Part 1) Loading and Pre-processing the Data
+
+
+
+
+
+
+
+
+
+
+
