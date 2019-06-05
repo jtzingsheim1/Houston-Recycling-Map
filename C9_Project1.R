@@ -18,17 +18,15 @@
 # must contain the date that you created the document, and it must contain a map
 # created with Leaflet. We would love to see you show off your creativity!
 #
-# The input for this document is the COHGIS Recycling Center Locations dataset
-# which comes from the URL below. The script leaves behind a data objects, but
-# the primary purpose is completing the core of the project, so end deliverables
-# can be easily created later.
+# This project will meet the objective by creating a map which shows recycling
+# locations in the area of Houston, TX. The input for this document is the
+# COHGIS Recycling Center Locations dataset which comes from the URL below. The
+# script leaves behind a data objects, but the primary purpose is completing the
+# core of the project, so end deliverables can be easily created later.
 
 
 library(tidyverse)
 library(leaflet)
-
-
-# Part 0) Function definitions--------------------------------------------------
 
 
 # Part 1) Loading and preprocessing the data------------------------------------
@@ -42,20 +40,21 @@ if (!file.exists(file.name)) {
 }
 
 # Load in the raw data
-recycling.data <- read.csv(file.name, stringsAsFactors = FALSE)  # 39 obs 9 vars
+rec.data <- read.csv(file.name, stringsAsFactors = FALSE, na.strings = " ")
+# 39 obs. of 9 variables
 rm(file.name)
 
 
 # Part 2) Explore and process data----------------------------------------------
 
 # Preview the data
-# str(recycling.data)  # The first two columns are longitude and latitude
-col1.name <- names(recycling.data)[1]  # First column name is unusual, extract
-# summary(recycling.data)  # Columns 3 and 5 are indicies, column 9 is an ID
+# str(rec.data)  # The first two columns are longitude and latitude
+col1.name <- names(rec.data)[1]  # First column name is unusual, extract
+# summary(rec.data)  # Columns 3 and 5 are indicies, column 9 is an ID
 
 # Remove unneeded columns and convert data types
-recycling.data <- recycling.data %>%
-  select(longitude = col1.name, latitude = Y, Location.Name = LOCATION,
+rec.data <- rec.data %>%
+  select(Longitude = col1.name, Latitude = Y, Location.Name = LOCATION,
          Location.Add = ADDRESS, Location.Status = Status,
          Location.Hours = Hours_1) %>%  # Drop and rename variables
   mutate(Location.Status = as.factor(Location.Status))  # 39 obs. of 6 variables
@@ -64,19 +63,13 @@ rm(col1.name)
 
 # Part 3) Generate the map------------------------------------------------------
 
-# recycling.data %>%
-#   leaflet() %>%
-#   addTiles() %>%
-#   addMarkers()
-
-
-
-
-
-
-
-
-
-
-
+rec.data %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(lng = rec.data$Longitude, lat = rec.data$Latitude,
+             popup = paste("<b>", rec.data$Location.Name, "</b><br>",
+                           "Address: ", rec.data$Location.Add, "<br>",
+                           "Status: ", rec.data$Location.Status, "<br>",
+                           "Hours: ", rec.data$Location.Hours, sep = "")) %>%
+  print()
 
