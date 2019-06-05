@@ -22,26 +22,71 @@ Markdown that features a map created with Leaflet.
 
 To meet the objective a map was created which shows recycling locations in the
 area of Houston, TX. The input for this document is a static file of the COHGIS
-Recycling Center Locations dataset which came from the URL below.
+Recycling Center Locations dataset which came from the URL below. This is
+essentially a reproduction of a feature that already exists on their website.
+This report page is hosted by GitHub Pages, and the repo for this project is
+located [here][2]
 
+[2]: xxxxx  "GitHub repo"
 
 ## Acknowledgement
 
 Acknowledgement for this dataset goes to the City of Houston who make this data
-available through their GIS open data portal which is located [here][1]
+available through their [GIS open data portal][1]
 
 [1]: https://cohgis-mycity.opendata.arcgis.com/  "COHGIS Website"
 
 
-## Part 1) Loading and Pre-processing the Data
+## Part 1) Loading and Processing the Data
+
+In the code chunk below the required packages are loaded and the raw data is
+downloaded. The data are then processed to prepare for mapping.
+
+```{r loading, message = FALSE}
+
+# Load necessary packages
+library(tidyverse)
+library(leaflet)
+
+# Check if the file exists in the directory before downloading it again
+file.name <- "Recycling_Center_Locations.csv"
+if (!file.exists(file.name)) {
+  url <- "https://opendata.arcgis.com/datasets/2934190c5b8c4f508d80f22905d8cacc_2.csv"
+  download.file(url, file.name)
+  rm(url)
+}
+
+# Load in the raw data
+rec.data <- read.csv(file.name, stringsAsFactors = FALSE, na.strings = " ")
+# 39 obs. of 9 variables
+
+# Remove unneeded columns and convert data types
+col1.name <- names(rec.data)[1]  # The first column name is not text, extract it
+rec.data <- rec.data %>%
+  select(Longitude = col1.name, Latitude = Y, Location.Name = LOCATION,
+         Location.Add = ADDRESS, Location.Status = Status,
+         Location.Hours = Hours_1) %>%  # Drop and rename variables
+  mutate(Location.Status = as.factor(Location.Status))  # 39 obs. of 6 variables
+rm(file.name, col1.name)
+
+```
 
 
+## Part 2) Generating the Map
 
+In the next code chunk the data are placed into the map.
 
+```{r mapping}
 
+rec.map <- rec.data %>%
+  leaflet() %>%
+  addTiles() %>%
+  addMarkers(lng = rec.data$Longitude, lat = rec.data$Latitude,
+             popup = paste("<b>", rec.data$Location.Name, "</b><br>",
+                           "Address: ", rec.data$Location.Add, "<br>",
+                           "Status: ", rec.data$Location.Status, "<br>",
+                           "Hours: ", rec.data$Location.Hours, sep = ""))
+rec.map
 
-
-
-
-
+```
 
