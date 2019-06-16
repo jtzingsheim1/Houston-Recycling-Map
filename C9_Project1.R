@@ -41,26 +41,8 @@ coordinate.cols <- as.data.frame(do.call(rbind, rec.data$coordinates))
 rec.data <- bind_cols(rec.data, coordinate.cols)  # Add split columns
 rm(url1, coordinate.cols)
 
-# # Check if the file exists in the directory before downloading it again
-# file.name <- "Recycling_Center_Locations.csv"
-# if (!file.exists(file.name)) {
-#   url <- "https://opendata.arcgis.com/datasets/2934190c5b8c4f508d80f22905d8cacc_2.csv"
-#   download.file(url, file.name)
-#   rm(url)
-# }
-# 
-# # Load in the raw data
-# rec.data <- read.csv(file.name, stringsAsFactors = FALSE, na.strings = " ")
-# # 39 obs. of 9 variables
-# rm(file.name)
-
 
 # Part 2) Explore and process data----------------------------------------------
-
-# # Preview the data
-# # str(rec.data)  # The first two columns are longitude and latitude
-# col1.name <- names(rec.data)[1]  # First column name is unusual, extract
-# # summary(rec.data)  # Columns 3 and 5 are indicies, column 9 is an ID
 
 # Remove unneeded columns and convert data types
 rec.data <- rec.data %>%
@@ -68,13 +50,6 @@ rec.data <- rec.data %>%
          Location.Add = ADDRESS, Location.Status = Status,
          Location.Hours = Hours_1) %>%  # Drop and rename variables
   mutate(Location.Status = as.factor(Location.Status))  # 39 obs. of 6 variables
-
-# rec.data <- rec.data %>%
-#   select(Longitude = col1.name, Latitude = Y, Location.Name = LOCATION,
-#          Location.Add = ADDRESS, Location.Status = Status,
-#          Location.Hours = Hours_1) %>%  # Drop and rename variables
-#   mutate(Location.Status = as.factor(Location.Status))  # 39 obs. of 6 variables
-# rm(col1.name)
 
 
 # Part 3) Generate the map------------------------------------------------------
