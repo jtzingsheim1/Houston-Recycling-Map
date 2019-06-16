@@ -25,20 +25,21 @@
 # core of the project, so end deliverables can be easily created later.
 
 
+library(jsonlite)
 library(tidyverse)
 library(leaflet)
-library(jsonlite)
 
 
 # Part 1) Load and pre-process data-----------------------------------------
 
+# Load in data through API
 url1 <- "https://opendata.arcgis.com/datasets/2934190c5b8c4f508d80f22905d8cacc_2.geojson"
-data.raw <- fromJSON(url1)$features
-rec.data <- bind_cols(data.raw$properties, data.raw$geometry)
+data.raw <- fromJSON(url1)$features  # 39 obs. of 3 variables
+rec.data <- bind_cols(data.raw$properties, data.raw$geometry)  # 39 obs. of 9
 
 # Split the coordinates column and add to data frame
-coordinate.cols <- as.data.frame(do.call(rbind, rec.data$coordinates))
-rec.data <- bind_cols(rec.data, coordinate.cols)  # Add split columns
+coordinate.cols <- as.data.frame(do.call(rbind, rec.data$coordinates))  # 39 x 2
+rec.data <- bind_cols(rec.data, coordinate.cols)  # 39 obs. of 11 variables
 rm(url1, coordinate.cols)
 
 
