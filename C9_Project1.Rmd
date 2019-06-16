@@ -45,30 +45,26 @@ downloaded. The data are then processed to prepare for mapping.
 ```{r loading, message = FALSE}
 
 # Load necessary packages
+library(jsonlite)
 library(tidyverse)
 library(leaflet)
 
-# Check if the file exists in the directory before downloading it again
-file.name <- "Recycling_Center_Locations.csv"
-if (!file.exists(file.name)) {
-  url <- "https://opendata.arcgis.com/datasets/2934190c5b8c4f508d80f22905d8cacc_2.csv"
-  download.file(url, file.name)
-  rm(url)
-}
+# Load in data through API
+url1 <- "https://opendata.arcgis.com/datasets/2934190c5b8c4f508d80f22905d8cacc_2.geojson"
+data.raw <- fromJSON(url1)$features  # 39 obs. of 3 variables
+rec.data <- bind_cols(data.raw$properties, data.raw$geometry)  # 39 obs. of 9
 
-# Load in the raw data
-rec.data <- read.csv(file.name, stringsAsFactors = FALSE, na.strings = " ")
-# 39 obs. of 9 variables
+# Split the coordinates column and add to data frame
+coordinate.cols <- as.data.frame(do.call(rbind, rec.data$coordinates))  # 39 x 2
+rec.data <- bind_cols(rec.data, coordinate.cols)  # 39 obs. of 11 variables
+rm(url1, coordinate.cols)
 
 # Remove unneeded columns and convert data types
-col1.name <- names(rec.data)[1]  # The first column name is not text, extract it
 rec.data <- rec.data %>%
-  select(Longitude = col1.name, Latitude = Y, Location.Name = LOCATION,
+  select(Longitude = V1, Latitude = V2, Location.Name = LOCATION,
          Location.Add = ADDRESS, Location.Status = Status,
          Location.Hours = Hours_1) %>%  # Drop and rename variables
   mutate(Location.Status = as.factor(Location.Status))  # 39 obs. of 6 variables
-as_tibble(rec.data)  # Preview the data
-rm(file.name, col1.name)
 
 ```
 
